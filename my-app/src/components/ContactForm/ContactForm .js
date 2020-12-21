@@ -1,76 +1,76 @@
-import React, { Component } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import styles from './ContactForm.module.css';
 
 import uuid from 'react-uuid';
 
-class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
+function ContactForm({ addContact }) {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
-  changeHandler = e => {
+  const changeHandler = e => {
     const { name, value } = e.target;
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
 
-    this.setState({
-      [name]: value,
-    });
+      case 'number':
+        setNumber(value);
+        break;
+
+      default:
+        break;
+    }
   };
 
-  submitHandler = e => {
+  const submitHandler = e => {
     e.preventDefault();
-    const { name, number } = this.state;
     const contact = {
       id: uuid(),
       name: name,
       number: number,
     };
-    this.props.addContact(contact);
+    addContact(contact);
 
-    this.reset();
+    reset();
   };
 
-  reset = () => {
-    this.setState({
-      name: '',
-      number: '',
-    });
+  const reset = () => {
+    setName('');
+    setNumber('');
   };
 
-  render() {
-    const { name, number } = this.state;
-    return (
-      <form onSubmit={this.submitHandler} className={styles.contactForm}>
-        <label htmlFor="nameInput">
-          Name:
-          <input
-            type="text"
-            name="name"
-            value={name}
-            placeholder="enter name..."
-            onChange={this.changeHandler}
-            id="nameInput"
-          />
-        </label>
+  return (
+    <form onSubmit={submitHandler} className={styles.contactForm}>
+      <label htmlFor="nameInput">
+        Name:
+        <input
+          type="text"
+          name="name"
+          value={name}
+          placeholder="enter name..."
+          onChange={changeHandler}
+          id="nameInput"
+        />
+      </label>
 
-        <label htmlFor="numberInput">
-          Number:
-          <input
-            type="tel"
-            name="number"
-            value={number}
-            placeholder="enter number..."
-            onChange={this.changeHandler}
-            id="numberInput"
-          />
-        </label>
-        <button type="submit" disabled={!name.length || !number.length}>
-          Add contact
-        </button>
-      </form>
-    );
-  }
+      <label htmlFor="numberInput">
+        Number:
+        <input
+          type="tel"
+          name="number"
+          value={number}
+          placeholder="enter number..."
+          onChange={changeHandler}
+          id="numberInput"
+        />
+      </label>
+      <button type="submit" disabled={!name.length || !number.length}>
+        Add contact
+      </button>
+    </form>
+  );
 }
 
 ContactForm.propTypes = {
